@@ -1,0 +1,40 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>monedas</groupId>
+        <artifactId>api</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>aplicacion</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>monedas</groupId> <!-- Ajusta según el paquete de tu proyecto -->
+            <artifactId>dominio</artifactId>
+            <version>0.0.1-SNAPSHOT</version> <!-- O usa la versión que corresponda -->
+        </dependency>
+        <dependency>
+            <groupId>monedas</groupId> <!-- Ajusta según el paquete de tu proyecto -->
+            <artifactId>core</artifactId>
+            <version>0.0.1-SNAPSHOT</version> <!-- O usa la versión que corresponda -->
+        </dependency>
+        <dependency>
+            <groupId>monedas</groupId> <!-- Ajusta según el paquete de tu proyecto -->
+            <artifactId>infraestructura</artifactId>
+            <version>0.0.1-SNAPSHOT</version> <!-- O usa la versión que corresponda -->
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
