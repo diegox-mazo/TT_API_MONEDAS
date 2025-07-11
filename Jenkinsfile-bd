@@ -2,7 +2,7 @@
     agent any
 
     environment {
-        KUBECONFIG = credentials('credencial-kubernetes')
+        KUBECONFIG = credentials('credencial-kubernetes') // ID de la credencial de kubernetes en pipeline Jenkins
     }
 
     stages {
@@ -11,7 +11,9 @@
                 script {// Este comando es para borrar la BD creada ya que no esta completa, solo para probar que sirva el pipeline.
                     bat """
                         kubectl delete statefulset bdmonedas-sfs --ignore-not-found
+                        kubectl delete pvc storage-bdmonedas-bdmonedas-sfs-0 --ignore-not-found
                     """
+                    //                  [volumeClaimTemplates name (sfs)]-[StatefulSet name (Controlador)]-[consecutivo replica (Empieza en 0)]
                 }
             }
         }
