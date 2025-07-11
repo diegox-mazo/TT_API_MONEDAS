@@ -1,0 +1,47 @@
+```pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = credentials('credencial-kubernetes')
+    }
+
+    stages {
+        stage('Limpiar datos previos') {
+            steps {
+                script {// Este comando es para borrar la BD creada ya que no esta completa, solo para probar que sirva el pipeline.
+                    bat """
+                        kubectl delete statefulset bdmonedas-sfs --ignore-not-found
+                    """
+                }
+            }
+        }
+
+        stage('Aplicar Manifiestos Infraestructura') {
+            steps {
+                script {//Ruta fisica
+                    bat """
+                        kubectl apply -f _manifiestos\\infraestructura\\
+                    """
+                }
+            }
+        }
+
+        stage('Esperar Pod listo') {
+            steps {
+                script {//ruta dentro de controlador Kubernetes
+                    bat """
+                        kubectl rollout status statefulset/bdmonedas-sfs
+                    """
+                }
+            }
+        }
+
+        post {
+            success {
+                echo 'Infraestructura desplegada correctamente!'
+            }
+            failure {
+                echo 'Error desplegando la infraestructura.'
+            }
+        }
+    }
