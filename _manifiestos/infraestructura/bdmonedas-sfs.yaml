@@ -17,7 +17,7 @@ spec:
         - name: bdmonedas  # <-- Aquí empieza la definición del único contenedor
           image: postgres:16
           ports:
-            - containerPort: 5433 # <-- El mismo de targerPort del servicio.
+            - containerPort: 5432 # <-- El mismo de targerPort del servicio.
           env:  # <-- Esta sección debe estar indentada al mismo nivel que 'ports', 'image', 'name'
             - name: POSTGRES_DB
               value: monedas
