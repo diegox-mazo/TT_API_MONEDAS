@@ -4,7 +4,7 @@ metadata:
   name: iniciar-bdmonedas
 spec:
   ttlSecondsAfterFinished: null
-  backoffLimits: 0
+  backoffLimit: 0
   template:
     spec:
       restartPolicy: Never
