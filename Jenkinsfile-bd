@@ -17,6 +17,7 @@ pipeline {
                 }
             }
         }
+    
 
         stage('Aplicar Manifiestos Infraestructura') {
             steps {
@@ -36,15 +37,16 @@ pipeline {
                     """
                 }
             }
-        }
+        } 
+    }
 
-        post {
-            success {
-                echo 'Infraestructura desplegada correctamente!'
-            }
-            failure {
-                echo 'Error desplegando la infraestructura.'
-            }
+    post {
+        success {
+            echo 'Infraestructura desplegada correctamente!'
+        }
+        failure {
+            echo 'Error desplegando la infraestructura.'
         }
     }
+
 }
