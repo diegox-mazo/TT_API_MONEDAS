@@ -21,7 +21,7 @@ pipeline {
 
         stage('Aplicar Manifiestos Infraestructura') {
             steps {
-                script {//Ruta fisica
+                script {//Ruta fisica "\\"
                     bat """
                         kubectl apply -f _manifiestos\\infraestructura\\
                     """
@@ -31,9 +31,23 @@ pipeline {
 
         stage('Esperar Pod listo') {
             steps {
-                script {//ruta dentro de controlador Kubernetes
+                script {//ruta dentro de controlador Kubernetes solo un "/"
                     bat """
                         kubectl rollout status statefulset/bdmonedas-sfs
+                    """
+                }
+            }
+        }
+
+        stage('Ejecutar Scripts iniciales BD') {
+            steps {
+                script {
+                    bat """
+                        kubectl delete job iniciar-bdmonedas --ignore-not-found
+                        kubectl apply -f _manifiestos\\infraestructura\\jobs\\iniciar-bdmonedas.yaml
+                        kubectl wait --for=condition=complete job/iniciar-bdmonedas-tt --timeout=600s
+
+                        kubectl logs job/iniciar-bdmonedas
                     """
                 }
             }
