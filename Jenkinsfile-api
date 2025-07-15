@@ -1,12 +1,18 @@
 pipeline{
     agent any
 
+    /*
     environment{
         DOCKER_IMAGE = 'apimonedastt'
         CONTAINER_NAME = 'dockerapimonedastt'
         DOCKER_NETWORK = 'tt_db_monedas_red'
         HOST_PORT = '9080'
         CONTAINER_PORT = '8080'
+    }
+    */
+    environment {
+        DOCKER_IMAGE = 'moxow/api_monedas_tt' //Repositorio Docker
+        KUBECONFIG = credentials('credencial-kubernetes') // ID de la credencial de kubernetes en pipeline Jenkins
     }
 
     stages{
@@ -24,6 +30,7 @@ pipeline{
                 //}
             }
         }
+        /*
         stage('Limpiar contenedor existente') {
             steps {
                 script {
@@ -38,11 +45,59 @@ pipeline{
                 }
             }
         }
+        */
+        stage('Limpiar datos previos') {//Manifiestos api
+            steps {
+                script {
+                    bat """
+                    kubectl delete hpa apimonedas-hpa-tt --ignore-not-found
+                    kubectl delete deployment apimonedas-deployment-tt --ignore-not-found
+                    kubectl delete service apimonedas-servicio-tt --ignore-not-found
+                    kubectl delete configmap apimonedas-configmap-tt --ignore-not-found
+                    """
+                }
+            }
+        }
+
+        stage('Registrar Imagen API') {
+            steps {// Credencial establecida en Jenkins para Docker hub
+                withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat """
+                        docker push ${DOCKER_IMAGE}
+                        docker logout
+                    """
+                }
+            }
+        }
+
+        stage('Aplicar Manifiestos API') {
+            steps {
+                script {//Ruta fisica "\\"
+                    bat """
+                        kubectl apply -f _manifiestos\\api\\
+                    """
+                }
+            }
+        }
+
+        stage('Despliegue API') {
+            steps {
+                script {
+                    bat """
+                        kubectl set image deployment/apimonedas-deployment-tt ${DOCKER_IMAGE} --record
+                        kubectl rollout status deployment/apimonedas-deployment-tt
+                    """
+                }
+            }
+        }
+
+        /*
         stage('Desplegar contenedor'){
             steps{
                 bat "docker run --network ${DOCKER_NETWORK} --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -d ${DOCKER_IMAGE}"
             }
         }
+        */
     
     }
 }
