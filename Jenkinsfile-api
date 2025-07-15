@@ -61,7 +61,7 @@ pipeline{
 
         stage('Registrar Imagen API') {
             steps {// Credencial establecida en Jenkins para Docker hub
-                withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat """
                         docker push ${DOCKER_IMAGE}
                         docker logout
